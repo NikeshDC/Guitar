@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 public class GuitarString : MonoBehaviour
 {
     private int selectedFret = 0; //0 stands for open string
-    public int MAX_FRET = 12;
+    public int MAX_FRETS = 12;
 
     private float fretPitchIncrementfactor = Mathf.Pow(2.0f, 1.0f/12);  //divde octave into 12 semitones by equal temperament
     private float fretPitch = 1.0f;  //the pitch caused only by selected fret and not taking into account string tension
@@ -20,6 +20,7 @@ public class GuitarString : MonoBehaviour
 
     public Transform fretStartPos;
     public Transform fretEndPos;
+    [HideInInspector]
     public Vector3 basePosition;
 
     void Start()
@@ -37,7 +38,7 @@ public class GuitarString : MonoBehaviour
     {//finger position is in world coordinates
         //assuming string extends along x axis
         float normalizedPosition = (fingerPosition - fretStartPos.position.x) / (fretEndPos.position.x - fretStartPos.position.x);
-        return (int) Mathf.Ceil(normalizedPosition * MAX_FRET); //Fret 0 is open fret when no finger is pressed in fretboard
+        return (int) Mathf.Ceil(normalizedPosition * MAX_FRETS); //Fret 0 is open fret when no finger is pressed in fretboard
     }
 
     public void resetString()
@@ -47,13 +48,13 @@ public class GuitarString : MonoBehaviour
 
     public void selectFret(int fret)
     {
-        if (fret <= MAX_FRET && fret >= 0)
+        if (fret <= MAX_FRETS && fret >= 0)
         {
             selectedFret = fret;
             setPitchFromFret();
         }
         else
-            Debug.LogWarning("Fret greater than " + MAX_FRET + " selected");
+            Debug.LogWarning("Fret greater than " + MAX_FRETS + " selected");
     }
     public int getSelectedFret()
     {

@@ -8,7 +8,7 @@ public class StrummingInputHandler : MonoBehaviour, IFingerTouchHandler
     private float velocity;   //velocity of finger swipe (in vertical direction i.e. y-axis) used for setting volume of string while strumming
                               //rougly equates to how much pixel per second travelled 
 
-    private float updateInterval = 20f / 1000;  //checks for swipe movement every 50ms
+    private float updateInterval = 10f / 1000;  //checks for swipe movement every 10ms
     private float volumeFactor = 1.0f / 1000;  //normalize velocity to between 0 and 1 to set volume of string while strumming                                            
 
     public GameManager gameManager;

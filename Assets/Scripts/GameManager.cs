@@ -26,6 +26,15 @@ public class GameManager : MonoBehaviour
             Vector3 instantiatePos = new Vector3(xpos, 0, 0);
             Instantiate(fretPrefab, instantiatePos, Quaternion.identity);
         }
+
+        //set variables for each guitar strings
+        foreach(GameObject guitarStringObj in guitarStrings)
+        {
+            GuitarString gString = guitarStringObj.GetComponent<GuitarString>();
+            gString.fretStartPos = this.fretStartPos;
+            gString.fretEndPos = this.fretEndPos;
+            gString.MAX_FRETS = MAX_FRETS;
+        }
     }
 
     // Update is called once per frame
