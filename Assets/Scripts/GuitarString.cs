@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections;
 
 public class GuitarString : MonoBehaviour
 {
     private int selectedFret = 0; //0 stands for open string
     public int MAX_FRETS = 12;
 
-    private float fretPitchIncrementfactor = Mathf.Pow(2.0f, 1.0f/12);  //divde octave into 12 semitones by equal temperament
+    static private float fretPitchIncrementfactor = Mathf.Pow(2.0f, 1.0f/12);  //divde octave into 12 semitones by equal temperament
     private float fretPitch = 1.0f;  //the pitch caused only by selected fret and not taking into account string tension
     private float tensionFactor = 1.0f;  //a factor to simulate tension on string
-    public float maxTensionFactor = 1.1225f; //two semitones above
+    public float maxTensionFactor = fretPitchIncrementfactor; //one semitones above
 
     [SerializeField]
     [Range(0.5f, 0.75f)]
@@ -17,6 +18,9 @@ public class GuitarString : MonoBehaviour
 
     AudioSource stringPlayer;
     public AudioClip baseNote;
+    public Animator stringAnimator;
+    [Range(0f, 0.98f)]
+    public float animationEndFactor;
 
     public Transform fretStartPos;
     public Transform fretEndPos;
@@ -95,6 +99,24 @@ public class GuitarString : MonoBehaviour
     public void playString()
     {
         stringPlayer.PlayDelayed(0f);
+        stringAnimator.SetBool("vibrate", true);
+        //StartCoroutine(stopStringVibrateAnimationAfter(baseNote.length * animationEndFactor));
     }
+
+    void Update()
+    {
+        //check for audio time and stop animation 
+        //stop animation after audio clip is near end as very little or no sound is heard towards end
+        if(stringPlayer.time > baseNote.length * animationEndFactor)
+        {
+            stringAnimator.SetBool("vibrate", false);
+        }
+    }
+
+    /*private IEnumerator stopStringVibrateAnimationAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        stringAnimator.SetBool("vibrate", false);
+    }*/
   
 }

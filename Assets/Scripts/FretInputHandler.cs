@@ -12,8 +12,8 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
 
     public float stringSelectionMargin = 0.3f;  //margin from center position of strings which is considered to be touch area for corresponding strings
 
-    public float maxStringMoveDistance = 1.0f; //the distance string is allowed to bend from initial position
-    public float bendThreshold = 0.5f;
+    public float maxStringMoveDistance = 0.9f; //the distance string is allowed to bend from initial position
+    public float bendThreshold = 0.35f;
 
 
     Vector2 lastTouchPos;
@@ -87,12 +87,13 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
         Vector3 touchToWorld = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 0));
 
         float bendMoveDistance = touchToWorld.y - baseTouchPos.y;
-        bendMoveDistance = Mathf.Clamp(bendMoveDistance - bendThreshold, 0f, maxStringMoveDistance); //only if movement is greater than threshold consider bending
+        float bendMoveDistanceAbs = Mathf.Abs(bendMoveDistance);
+        bendMoveDistanceAbs = Mathf.Clamp(bendMoveDistanceAbs - bendThreshold, 0f, maxStringMoveDistance); //only if movement is greater than threshold consider bending
         //bending guitar string based on y position of touch
-        if ( Mathf.Abs(bendMoveDistance) < maxStringMoveDistance)
+        if (bendMoveDistanceAbs < maxStringMoveDistance)
         {
             gString.transform.position = gString.basePosition + new Vector3(0f, bendMoveDistance, 0f);
-            float tensionAmount = 1.0f + Mathf.Abs(bendMoveDistance) * gString.maxTensionFactor / maxStringMoveDistance;
+            float tensionAmount = 1.0f + bendMoveDistanceAbs * gString.maxTensionFactor / maxStringMoveDistance;
             gString.setTension(tensionAmount);
         }
 
