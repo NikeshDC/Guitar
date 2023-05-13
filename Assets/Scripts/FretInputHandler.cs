@@ -12,7 +12,7 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
 
     public float stringSelectionMargin = 0.3f;  //margin from center position of strings which is considered to be touch area for corresponding strings
 
-    public float maxStringMoveDistance = 0.9f; //the distance string is allowed to bend from initial position
+    public float maxStringMoveDistance = 0.7f; //the distance string is allowed to bend from initial position
     public float bendThreshold = 0.35f;
 
 
@@ -69,7 +69,7 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
     private void OnTouchRemoved()
     {//called in either of OnEnd or OnCancel
         if (selectedString != -1)
-        {//some string has been selected
+        {//some string had been selected
             GuitarString gString = gameManager.guitarStrings[selectedString].GetComponent<GuitarString>();
             if (!otherTouchInSameString())
             {
@@ -90,9 +90,10 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
         float bendMoveDistanceAbs = Mathf.Abs(bendMoveDistance);
         bendMoveDistanceAbs = Mathf.Clamp(bendMoveDistanceAbs - bendThreshold, 0f, maxStringMoveDistance); //only if movement is greater than threshold consider bending
         //bending guitar string based on y position of touch
-        if (bendMoveDistanceAbs < maxStringMoveDistance)
+        if (bendMoveDistanceAbs > 0 && bendMoveDistanceAbs < maxStringMoveDistance)
         {
-            gString.transform.position = gString.basePosition + new Vector3(0f, bendMoveDistance, 0f);
+            float stringMoveDist = (Mathf.Sign(bendMoveDistance)) * bendMoveDistanceAbs;
+            gString.transform.position = gString.basePosition + new Vector3(0f,stringMoveDist , 0f);
             float tensionAmount = 1.0f + bendMoveDistanceAbs * gString.maxTensionFactor / maxStringMoveDistance;
             gString.setTension(tensionAmount);
         }
@@ -130,6 +131,26 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
             }
         }
         return true;
+    }
+
+    FretInputHandler findBaseTouch(int stringId)
+    {//returns base touch for the string if it exists
+        FretInputHandler baseTouch = null;
+        foreach (FretInputHandler fretInputHandler in activeObjects)
+        {
+            if (fretInputHandler.selectedString == stringId)
+            {
+                if(baseTouch == null)
+                {
+                    baseTouch = fretInputHandler;
+                }
+                if (fretInputHandler.lastTouchPos.x <= baseTouch.lastTouchPos.x)
+                {//this object is farther towards strumming region so is more likely to be base touch for its string
+                    baseTouch = fretInputHandler;
+                }
+            }
+        }
+        return baseTouch;
     }
 
     bool otherTouchInSameString()
