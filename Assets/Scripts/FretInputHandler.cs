@@ -92,9 +92,11 @@ public class FretInputHandler : MonoBehaviour, IFingerTouchHandler
         //bending guitar string based on y position of touch
         if (bendMoveDistanceAbs > 0 && bendMoveDistanceAbs < maxStringMoveDistance)
         {
+            
             float stringMoveDist = (Mathf.Sign(bendMoveDistance)) * bendMoveDistanceAbs;
             gString.transform.position = gString.basePosition + new Vector3(0f,stringMoveDist , 0f);
             float tensionAmount = 1.0f + bendMoveDistanceAbs * gString.maxTensionFactor / maxStringMoveDistance;
+            //Debug.Log("Bend: " + gString.transform.position.y + ", bp: "+ gString.basePosition);
             gString.setTension(tensionAmount);
         }
 
