@@ -1,45 +1,59 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
-{//maintains global variables and manages all game components 
+{//maintains global variables required and sets important game components 
 
-    public List<GameObject> guitarStrings; //guitar strings that play the sounds
+    public List<GameObject> guitarStringObjects; //GameObject containing GuitarStringBehaviour component, expected to be populated in inspector
+    [HideInInspector]
+    public List<GuitarStringBehaviour> guitarStrings; //guitar strings that are actually responsible for playing the sounds
 
     public InputManager inputManager;
 
     public GameObject fretPrefab;
-
     public Transform fretStartPos;
     public Transform fretEndPos;
-    public int MAX_FRETS = 12;
+    public int numberOfFrets = 12;
 
-    // Start is called before the first frame update
-    void Start()
+
+    void Awake()
+    {
+        GenerateFretObjects();
+        SetGuitarStrings();
+        SetInputManager();
+    }
+
+    void GenerateFretObjects()
     {
         //construct fret board by placing frets
-        float fretInterval = (fretEndPos.position.x - fretStartPos.position.x) / MAX_FRETS;
-        for(int i=1; i<= MAX_FRETS; i++)
+        float fretInterval = (fretEndPos.position.x - fretStartPos.position.x) / this.numberOfFrets;
+        for (int i = 1; i <= this.numberOfFrets; i++)
         {
             float xpos = i * fretInterval + fretStartPos.position.x;
             Vector3 instantiatePos = new Vector3(xpos, 0, 0);
             Instantiate(fretPrefab, instantiatePos, Quaternion.identity);
         }
+    }
 
+    void SetGuitarStrings()
+    {
+        guitarStrings = new List<GuitarStringBehaviour>();
         //set variables for each guitar strings
-        foreach(GameObject guitarStringObj in guitarStrings)
+        foreach (GameObject guitarStringObj in guitarStringObjects)
         {
-            GuitarString gString = guitarStringObj.GetComponent<GuitarString>();
-            gString.fretStartPos = this.fretStartPos;
-            gString.fretEndPos = this.fretEndPos;
-            gString.MAX_FRETS = MAX_FRETS;
+            GuitarStringBehaviour gString = guitarStringObj.GetComponent<GuitarStringBehaviour>();
+            gString.stringStartPos = this.fretStartPos.position.x;
+            gString.stringEndPos = this.fretEndPos.position.x;
+            gString.numberOfFrets = this.numberOfFrets;
+            guitarStrings.Add(gString);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void SetInputManager()
     {
-        
+        inputManager.guitarStrings = this.guitarStrings;
+        //Vector3 fretEndPosToScreenSpace = Camera.main.WorldToScreenPoint(fretEndPos.position);
+        inputManager.strumAndFretAreaSeperator = fretEndPos.position;
     }
+
 }

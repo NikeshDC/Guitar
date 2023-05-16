@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class StrummingInputHandler : MonoBehaviour, IFingerTouchHandler
+public class StrummingInputHandler : GuitarStringsInputHandler
 { 
     private Vector2 currentTouchPos;  //current position of finger touch in screen coordinate
     private Vector2 lastTouchPos;   //the last recorded position of finger touch in screen coordinate
@@ -11,9 +11,7 @@ public class StrummingInputHandler : MonoBehaviour, IFingerTouchHandler
     private float updateInterval = 10f / 1000;  //checks for swipe movement every 10ms
     private float volumeFactor = 1.0f / 1000;  //normalize velocity to between 0 and 1 to set volume of string while strumming                                            
 
-    public GameManager gameManager;
-
-    public void OnBegin(Touch touch)
+    public override void OnBegin(Touch touch)
     {
         currentTouchPos = touch.position;
         lastTouchPos = touch.position;
@@ -21,22 +19,22 @@ public class StrummingInputHandler : MonoBehaviour, IFingerTouchHandler
         StartCoroutine(HandleSwipes());
     }
 
-    public void OnStationary(Touch touch)
+    public override void OnStationary(Touch touch)
     {
         //do nothing
     }
 
-    public void OnMove(Touch touch)
+    public override void OnMove(Touch touch)
     {
         currentTouchPos = touch.position;
     }
 
-    public void OnEnd(Touch touch)
+    public override void OnEnd(Touch touch)
     {
         StopCoroutine("HandleSwipes");
     }
 
-    public void OnCancel(Touch touch)
+    public override void OnCancel(Touch touch)
     {
         //do nothing
     }
@@ -52,17 +50,16 @@ public class StrummingInputHandler : MonoBehaviour, IFingerTouchHandler
                 float stringVolume = Mathf.Abs(velocity * volumeFactor);
                 //Debug.Log("Volume: " + stringVolume);
 
-                foreach (GameObject guitarStringObj in gameManager.guitarStrings)
+                foreach (GuitarStringBehaviour guitarString in this.guitarStrings)
                 {
                     //touch points are in screen coordinate so for comparison they need to be in same coordinate space
-                    Vector3 guitarStringScreenspacePos = Camera.main.WorldToScreenPoint(guitarStringObj.transform.position);
+                    Vector3 guitarStringScreenspacePos = Camera.main.WorldToScreenPoint(guitarString.transform.position);
 
                     if ((guitarStringScreenspacePos.y <= currentTouchPos.y && guitarStringScreenspacePos.y >= lastTouchPos.y) ||
                         (guitarStringScreenspacePos.y >= currentTouchPos.y && guitarStringScreenspacePos.y <= lastTouchPos.y))
-                    {//the swipe line crosses the string
-                        GuitarString guitarString = guitarStringObj.GetComponent<GuitarString>();
-                        guitarString.setVolume(stringVolume);
-                        guitarString.playString();
+                    {//the swipe line crosses the guitar string
+                        guitarString.SetIntensity(stringVolume);
+                        guitarString.PlayString();
                     }
                 }
             }

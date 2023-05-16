@@ -4,23 +4,19 @@ using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {//handles touch inputs
+    public List<GuitarStringBehaviour> guitarStrings;
 
-    public GameManager gameManager;
+    public Vector3 strumAndFretAreaSeperator; //the area to right of this x-position is for fret board and left is for strumming the string
 
-    public Transform strumAndFretAreaSeperator; //the area to right of this transform's x-position is for fret board and left is for strumming the string
+    private Dictionary<int, IFingerTouchHandler> fingerTouches;  //fingertouch with its corresponding id as key
 
-    [Range(0f, 0.1f)]
-    public float stringSelectionMargin;  //margin from center position of strings which is considered to be touch area for corresponding strings
-
-    Dictionary<int, IFingerTouchHandler> fingerTouches;  //fingertouch with its corresponding id as key
-
-    // Start is called before the first frame update
+   
     void Start()
     {
         fingerTouches = new Dictionary<int, IFingerTouchHandler>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if(Input.touchCount > 0)
@@ -29,50 +25,44 @@ public class InputManager : MonoBehaviour
             {
                 if(touch.phase == TouchPhase.Began)
                 {//new finger touch has been started
-                    Vector3 strumAndFretAreaSeperatorToScreenSpace = Camera.main.WorldToScreenPoint(strumAndFretAreaSeperator.position);
-                    if (touch.position.x <= strumAndFretAreaSeperatorToScreenSpace.x)
-                    {//if the touch begins within the strumming area classify it as strum input
-                        StrummingInputHandler strumHandle = gameObject.AddComponent<StrummingInputHandler>() as StrummingInputHandler;
-                        strumHandle.gameManager = gameManager;
-                        fingerTouches.Add(touch.fingerId, strumHandle);
-                    }
-                    else
-                    {
-                        FretInputHandler fretHandle = gameObject.AddComponent<FretInputHandler>() as FretInputHandler;
-                        fretHandle.gameManager = gameManager;
-                        fingerTouches.Add(touch.fingerId, fretHandle);
-                    }
+                    RegisterNewTouch(touch);
                 }
 
                 if(fingerTouches.ContainsKey(touch.fingerId))
                 {
-                    callFingerTouchCallback(fingerTouches[touch.fingerId], touch);
+                    CallFingerTouchCallback(fingerTouches[touch.fingerId], touch);
                 }
                 else
                 {
-                    Debug.LogWarning("FingerId " + touch.fingerId + " not stored in begining.");
+                    Debug.LogError("FingerId " + touch.fingerId + " not stored in begining.");
                 }
 
                 if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                 {//finger touch has ended destroy correponding fingerTouch handlers
-                    IFingerTouchHandler fTouch = fingerTouches[touch.fingerId];
-                    fingerTouches.Remove(touch.fingerId);
-                    if (fTouch.GetType() == typeof(StrummingInputHandler))
-                    {
-                        StrummingInputHandler strumHandle = fTouch as StrummingInputHandler;
-                        Destroy(strumHandle);
-                    }
-                    else if(fTouch.GetType() == typeof(FretInputHandler))
-                    {
-                        FretInputHandler fretHandle = fTouch as FretInputHandler;
-                        Destroy(fretHandle);
-                    }
+                    CleanUpOldTouch(touch);
                 }
             }
         }
     }
-    
-    private void callFingerTouchCallback(IFingerTouchHandler fingerTouch, Touch touch)
+
+    private void RegisterNewTouch(Touch touch)
+    {
+        Vector3 strumAreaSeperatorToScreenSpace = Camera.main.WorldToScreenPoint(strumAndFretAreaSeperator);
+        if (touch.position.x <= strumAreaSeperatorToScreenSpace.x)
+        {//if the touch begins within the strumming area classify it as strum input
+            StrummingInputHandler strumHandle = gameObject.AddComponent<StrummingInputHandler>() as StrummingInputHandler;
+            strumHandle.guitarStrings = this.guitarStrings;
+            fingerTouches.Add(touch.fingerId, strumHandle);
+        }
+        else
+        {
+            FretInputHandler fretHandle = gameObject.AddComponent<FretInputHandler>() as FretInputHandler;
+            fretHandle.guitarStrings = this.guitarStrings;
+            fingerTouches.Add(touch.fingerId, fretHandle);
+        }
+    }
+
+    private void CallFingerTouchCallback(IFingerTouchHandler fingerTouch, Touch touch)
     {
         switch (touch.phase)
         {
@@ -95,6 +85,22 @@ public class InputManager : MonoBehaviour
             case TouchPhase.Canceled:
                 fingerTouch.OnCancel(touch);
                 break;
+        }
+    }
+
+    private void CleanUpOldTouch(Touch touch)
+    {
+        IFingerTouchHandler fTouch = fingerTouches[touch.fingerId];
+        fingerTouches.Remove(touch.fingerId);
+        if (fTouch.GetType() == typeof(StrummingInputHandler))
+        {
+            StrummingInputHandler strumHandle = fTouch as StrummingInputHandler;
+            Destroy(strumHandle);
+        }
+        else if (fTouch.GetType() == typeof(FretInputHandler))
+        {
+            FretInputHandler fretHandle = fTouch as FretInputHandler;
+            Destroy(fretHandle);
         }
     }
 

@@ -256,15 +256,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: 8dbbf30f6e56e4f4580906e554a50652, type: 3}
   stringAnimator: {fileID: 714794820}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &94086953
 Transform:
   m_ObjectHideFlags: 0
@@ -770,15 +769,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: 0ec7bde8f04138448b033e0de3ff48b4, type: 3}
   stringAnimator: {fileID: 1602022045}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &1095981904
 Transform:
   m_ObjectHideFlags: 0
@@ -1020,15 +1018,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: 9295935679334134fae2dfef015cdef8, type: 3}
   stringAnimator: {fileID: 1209582906}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &1208367908
 Transform:
   m_ObjectHideFlags: 0
@@ -1178,15 +1175,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: 3f5059831d4b89342b96cdfa268d772e, type: 3}
   stringAnimator: {fileID: 783679716}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &1407927589
 Transform:
   m_ObjectHideFlags: 0
@@ -1232,15 +1228,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: 8941c8eb2f0a2ce4db95e42b7f261af2, type: 3}
   stringAnimator: {fileID: 803642}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &1464074334
 Transform:
   m_ObjectHideFlags: 0
@@ -1287,9 +1282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b9a928a61aaf8841a0dff8adf36c708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1496512969}
-  strumAndFretAreaSeperator: {fileID: 804772173}
-  stringSelectionMargin: 0
+  guitarStrings: []
+  strumAndFretAreaSeperator: {x: 0, y: 0, z: 0}
 --- !u!114 &1496512969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1302,6 +1296,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73adf8b99f9bc294e85b40c0c5bedd7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  guitarStringObjects:
+  - {fileID: 1464074332}
+  - {fileID: 1095981901}
+  - {fileID: 1208367905}
+  - {fileID: 1407927586}
+  - {fileID: 1854998780}
+  - {fileID: 94086950}
   guitarStrings:
   - {fileID: 1464074332}
   - {fileID: 1095981901}
@@ -1309,11 +1310,11 @@ MonoBehaviour:
   - {fileID: 1407927586}
   - {fileID: 1854998780}
   - {fileID: 94086950}
-  inputManager: {fileID: 0}
+  inputManager: {fileID: 1496512968}
   fretPrefab: {fileID: 6235671719432901536, guid: 85aebafb4f2dcef418bcb7beb5c05c86, type: 3}
   fretStartPos: {fileID: 650695276}
   fretEndPos: {fileID: 804772173}
-  MAX_FRETS: 7
+  numberOfFrets: 7
 --- !u!4 &1496512970
 Transform:
   m_ObjectHideFlags: 0
@@ -1464,15 +1465,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fab120a5749d5241b9241d182a70f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MAX_FRETS: 12
-  maxTensionFactor: 1.1225
-  minVolume: 0.349
   baseNote: {fileID: 8300000, guid: a6cc751ff68757641aa4079c83b9c51f, type: 3}
   stringAnimator: {fileID: 185688562}
   animationEndFactor: 0.95
-  fretStartPos: {fileID: 0}
-  fretEndPos: {fileID: 0}
-  basePosition: {x: 0, y: 0, z: 0}
+  numberOfFrets: 0
+  stringStartPos: 0
+  stringEndPos: 0
+  minVolume: 0.349
+  maxBendDistance: 0.7
 --- !u!4 &1854998783
 Transform:
   m_ObjectHideFlags: 0
