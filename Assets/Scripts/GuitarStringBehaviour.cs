@@ -58,12 +58,14 @@ public class GuitarStringBehaviour : MonoBehaviour
     public void BendAt(float fingerPositionAlongString, float bendDistance)
     {
         //move this gameObject by bendDistance
-        this.transform.position = this.basePosition + new Vector3(0f, bendDistance, 0f);
+        float adjustedBendDistance = Mathf.Clamp(bendDistance, -this.maxBendDistance, this.maxBendDistance);
+        float adjustedBendDistanceAbs = Mathf.Abs(adjustedBendDistance);
+        this.transform.position = this.basePosition + new Vector3(0f, adjustedBendDistance, 0f);
 
         //cause guitar string to bend and then set new pitch
         this.HoldAt(fingerPositionAlongString);
-        bendDistance = Mathf.Clamp(Mathf.Abs(bendDistance), 0f, this.maxBendDistance);
-        float normalizedBendAmount = bendDistance * (1f / maxBendDistance);
+        
+        float normalizedBendAmount = adjustedBendDistanceAbs * (1f / maxBendDistance);
         guitarString.Bend(normalizedBendAmount);
         stringPlayer.pitch = guitarString.GetPitch();
     }

@@ -28,7 +28,6 @@ public class FretInputHandler : GuitarStringsInputHandler
         {//no string has been selected
             Vector3 touchToWorld = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 0));
             selectedString = GetSelectedStringFromTouchPos(touchToWorld.y);
-            //Debug.Log("SS: "+ selectedString);
         }
         else
         {
@@ -73,6 +72,11 @@ public class FretInputHandler : GuitarStringsInputHandler
             }
         }
         FretInputHandler.activeObjects.Remove(this);
+    }
+
+    private Vector3 TouchToWorldPoint(Vector2 touchPositionInScreen)
+    {
+        return Camera.main.ScreenToWorldPoint(new Vector3(touchPositionInScreen.x, touchPositionInScreen.y, 0));
     }
 
     private void SetGuitarStringToTouchPos(Touch touch)
