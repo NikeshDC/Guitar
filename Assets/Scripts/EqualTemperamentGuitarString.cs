@@ -3,17 +3,17 @@ using UnityEngine;
 public class EqualTemperamentGuitarString: IMusicString
 {
     private int selectedFret = 0; //0 stands for open string
-    public int numberOfFrets = 12;
+    public int numberOfFrets;
 
     private float fretPitchIncrementfactor = Mathf.Pow(2.0f, 1.0f / 12);  //divde octave into 12 semitones by equal temperament
     private float fretPitch = 1.0f;  //the pitch caused only by selected fret and not taking into account string tension
     private float tensionFactor = 1.0f;  //a factor to simulate tension on string
-    private float tensionIncrementFactor = 0.05946f; //one semitones above
+    private float tensionIncrementFactor = 0.0594631f; //one semitones above
     private float overallPitch = 1.0f;  //pitch obtained by combining tensionFactor and fretPitch
 
     public EqualTemperamentGuitarString(int numberOfFrets)
     { this.numberOfFrets = numberOfFrets; }
-    public EqualTemperamentGuitarString() { }
+    //public EqualTemperamentGuitarString() { }
 
     public void HoldAt(float holdPosition)
     {//hold the guitar string at given position (between 0 and 1.0f), value near 0 means near start or the first fret
@@ -50,4 +50,7 @@ public class EqualTemperamentGuitarString: IMusicString
         this.tensionFactor = 1.0f + this.tensionIncrementFactor * bendAmount;
         this.SetOverallPitch();
     }
+
+    public int GetNumberOfFrets()
+    { return this.numberOfFrets; }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class InputManager : MonoBehaviour
 {//handles touch inputs
-    public List<GuitarStringBehaviour> guitarStrings;
+    public List<MusicStringBehaviour> guitarStrings;
 
     public Vector3 strumAndFretAreaSeperator; //the area to right of this x-position is for fret board and left is for strumming the string
 

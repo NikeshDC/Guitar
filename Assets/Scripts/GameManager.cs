@@ -6,14 +6,14 @@ public class GameManager : MonoBehaviour
 
     public List<GameObject> guitarStringObjects; //GameObject containing GuitarStringBehaviour component, expected to be populated in inspector
     [HideInInspector]
-    public List<GuitarStringBehaviour> guitarStrings; //guitar strings that are actually responsible for playing the sounds
+    public List<MusicStringBehaviour> guitarStrings; //guitar strings that are actually responsible for playing the sounds
 
     public InputManager inputManager;
 
     public GameObject fretPrefab;
     public Transform fretStartPos;
     public Transform fretEndPos;
-    public int numberOfFrets = 12;
+    public int numberOfFrets = 7;
 
 
     void Awake()
@@ -37,11 +37,11 @@ public class GameManager : MonoBehaviour
 
     void SetGuitarStrings()
     {
-        guitarStrings = new List<GuitarStringBehaviour>();
+        guitarStrings = new List<MusicStringBehaviour>();
         //set variables for each guitar strings
         foreach (GameObject guitarStringObj in guitarStringObjects)
         {
-            GuitarStringBehaviour gString = guitarStringObj.GetComponent<GuitarStringBehaviour>();
+            MusicStringBehaviour gString = guitarStringObj.GetComponent<MusicStringBehaviour>();
             gString.stringStartPos = this.fretStartPos.position.x;
             gString.stringEndPos = this.fretEndPos.position.x;
             gString.numberOfFrets = this.numberOfFrets;

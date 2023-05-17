@@ -65,7 +65,7 @@ public class FretInputHandler : GuitarStringsInputHandler
     {//called in either of OnEnd or OnCancel
         if (selectedString != -1)
         {//some string had been selected
-            GuitarStringBehaviour gString = this.guitarStrings[selectedString];
+            MusicStringBehaviour gString = this.guitarStrings[selectedString];
             if (!OtherTouchInSameString())
             {
                 gString.ResetHold();
@@ -82,7 +82,7 @@ public class FretInputHandler : GuitarStringsInputHandler
     private void SetGuitarStringToTouchPos(Touch touch)
     {
         Vector3 touchToWorld = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 0));
-        GuitarStringBehaviour gString = this.guitarStrings[selectedString];
+        MusicStringBehaviour gString = this.guitarStrings[selectedString];
 
         float bendMoveDistance = touchToWorld.y - baseTouchPos.y;
         float bendMoveDistanceAbs = Mathf.Abs(bendMoveDistance);
@@ -102,7 +102,7 @@ public class FretInputHandler : GuitarStringsInputHandler
     int GetSelectedStringFromTouchPos(float ypos)
     {//based on ypos of the touch(in world coordinates) finds the selected string if any
         int i = -1;
-        foreach(GuitarStringBehaviour guitarString in this.guitarStrings)
+        foreach(MusicStringBehaviour guitarString in this.guitarStrings)
         {
             i++;
             float guitarStringPos = guitarString.transform.position.y;

@@ -50,7 +50,7 @@ public class StrummingInputHandler : GuitarStringsInputHandler
                 float stringVolume = Mathf.Abs(velocity * volumeFactor);
                 //Debug.Log("Volume: " + stringVolume);
 
-                foreach (GuitarStringBehaviour guitarString in this.guitarStrings)
+                foreach (MusicStringBehaviour guitarString in this.guitarStrings)
                 {
                     //touch points are in screen coordinate so for comparison they need to be in same coordinate space
                     Vector3 guitarStringScreenspacePos = Camera.main.WorldToScreenPoint(guitarString.transform.position);

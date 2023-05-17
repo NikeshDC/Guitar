@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class GuitarStringsInputHandler : MonoBehaviour, IFingerTouchHandler
 {
-    public List<GuitarStringBehaviour> guitarStrings;
+    public List<MusicStringBehaviour> guitarStrings;
 
     public abstract void OnBegin(Touch touch);
     public abstract void OnStationary(Touch touch);
