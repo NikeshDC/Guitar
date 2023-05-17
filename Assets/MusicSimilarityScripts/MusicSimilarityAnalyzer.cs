@@ -35,6 +35,8 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
 
     [SerializeField]
     private float analyzeInterval = 10f / 1000f;  //time after which to periodically analyze audio
+    
+    public BeatsVisualizer beatsVisualizer;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +57,9 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         audioPlayer2.clip = music2;
 
         StartCoroutine(AnalyzeAudio());
+
+        if (beatsVisualizer != null)
+            beatsVisualizer.InstantiateBeatObjects(numberOfSpectrumSamples);
     }
 
     IEnumerator AnalyzeAudio()
@@ -72,6 +77,8 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         while (audioPlayer1.isPlaying && audioPlayer1.time < minAudioLength)
         {
             SetSpectrumData();
+            if (beatsVisualizer != null)
+                beatsVisualizer.SetBeats(spectrumSamples1);
             float currentSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
             this.similarityScore = currentSimliarity;
             //Debug.Log("Time:"+audioPlayer1.time+audioPlayer2.time+"SC: " + this.similarityScore);
@@ -92,6 +99,8 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         while (audioPlayer2.isPlaying && audioPlayer2.time < minAudioLength)
         {
             SetSpectrumData();
+            if (beatsVisualizer != null)
+                beatsVisualizer.SetBeats(spectrumSamples2);
             float currentSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
             this.similarityScore = currentSimliarity;
             //Debug.Log("Time:" + audioPlayer1.time + audioPlayer2.time + "SC: " + this.similarityScore);
@@ -101,7 +110,7 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         }
 
         this.similarityScore = 1 - avgSimilarityScore / nofSamples;
-        Debug.Log("SimilarityScore: " + this.similarityScore);
+        //Debug.Log("SimilarityScore: " + this.similarityScore);
         labelText.text = "Similarity Score:";
         SetSimilarityScoreText();
     }
