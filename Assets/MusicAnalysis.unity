@@ -250,13 +250,13 @@ MonoBehaviour:
   audioMixer: {fileID: 24100000, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
   music1: {fileID: 8300000, guid: 8dbbf30f6e56e4f4580906e554a50652, type: 3}
   player1: {fileID: -5367823625995010185, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
-  music2: {fileID: 8300000, guid: a6cc751ff68757641aa4079c83b9c51f, type: 3}
+  music2: {fileID: 8300000, guid: 8dbbf30f6e56e4f4580906e554a50652, type: 3}
   player2: {fileID: 7985518058567945112, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
   numberOfSpectrumSamples: 1024
   labelText: {fileID: 178539075}
   scoreText: {fileID: 2050298791}
   secondAudioPlayWaitTime: 2
-  analyzeInterval: 0.1
+  analyzeInterval: 0.005
 --- !u!1 &1264548852
 GameObject:
   m_ObjectHideFlags: 0
