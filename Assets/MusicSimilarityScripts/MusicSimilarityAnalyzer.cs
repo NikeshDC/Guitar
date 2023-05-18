@@ -24,6 +24,9 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
     private float[] spectrumSamples1;  //spectrum data of played audio for music1
     private float[] spectrumSamples2;  //spectrum data of played audio for music2
 
+    private float[] dataSamples1;
+    private float[] dataSamples2;
+
     [SerializeField]
     private int numberOfSpectrumSamples = 1024;
 
@@ -35,6 +38,7 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
 
     [SerializeField]
     private float analyzeInterval = 10f / 1000f;  //time after which to periodically analyze audio
+    private float loudnessAnalysisWeight = 0.2f;
     
     public BeatsVisualizer beatsVisualizer;
 
@@ -46,12 +50,14 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         spectrumSamples1 = new float[numberOfSpectrumSamples];
         spectrumSamples2 = new float[numberOfSpectrumSamples];
 
+        dataSamples1 = new float[numberOfSpectrumSamples];
+        dataSamples2 = new float[numberOfSpectrumSamples];
+
         audioPlayer1 = gameObject.AddComponent<AudioSource>() as AudioSource;
         audioPlayer2 = gameObject.AddComponent<AudioSource>() as AudioSource;
 
         audioPlayer1.outputAudioMixerGroup = player1;
         audioPlayer2.outputAudioMixerGroup = player2;
-
 
         audioPlayer1.clip = music1;
         audioPlayer2.clip = music2;
@@ -79,11 +85,17 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
             SetSpectrumData();
             if (beatsVisualizer != null)
                 beatsVisualizer.SetBeats(spectrumSamples1);
-            float currentSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
-            this.similarityScore = currentSimliarity;
+
+            SetAudioData();
+            float avgLoudness1 = GetAverage(dataSamples1);
+            float avgLoudness2 = GetAverage(dataSamples2);
+            DivideArrayBy(spectrumSamples1, GetMax(spectrumSamples1));  //normalize frequency component
+            DivideArrayBy(spectrumSamples2, GetMax(spectrumSamples2));
+            float currentSpectrumSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
+            this.similarityScore = currentSpectrumSimliarity * (1 - loudnessAnalysisWeight) + loudnessAnalysisWeight * Mathf.Abs(avgLoudness1 - avgLoudness2);
             //Debug.Log("Time:"+audioPlayer1.time+audioPlayer2.time+"SC: " + this.similarityScore);
             //scoreText.text = this.similarityScore.ToString();
-            avgSimilarityScore += currentSimliarity;
+            avgSimilarityScore += this.similarityScore;
             nofSamples++;
             yield return new WaitForSeconds(analyzeInterval);
         }
@@ -101,10 +113,17 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
             SetSpectrumData();
             if (beatsVisualizer != null)
                 beatsVisualizer.SetBeats(spectrumSamples2);
-            float currentSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
-            this.similarityScore = currentSimliarity;
+
+            SetAudioData();
+            float avgLoudness1 = GetAverage(dataSamples1);
+            float avgLoudness2 = GetAverage(dataSamples2);
+            DivideArrayBy(spectrumSamples1, GetMax(spectrumSamples1));  //normalize frequency component
+            DivideArrayBy(spectrumSamples2, GetMax(spectrumSamples2));
+            float currentSpectrumSimliarity = CompareSpectrumSimilarity(spectrumSamples1, spectrumSamples2);
+            this.similarityScore = currentSpectrumSimliarity * (1 - loudnessAnalysisWeight) + loudnessAnalysisWeight * Mathf.Abs(avgLoudness1 - avgLoudness2);
             //Debug.Log("Time:" + audioPlayer1.time + audioPlayer2.time + "SC: " + this.similarityScore);
-            avgSimilarityScore += currentSimliarity;
+            //scoreText.text = this.similarityScore.ToString();
+            avgSimilarityScore += this.similarityScore;
             nofSamples++;
             yield return new WaitForSeconds(analyzeInterval);
         }
@@ -144,6 +163,18 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         audioPlayer2.GetSpectrumData(spectrumSamples2, 0, FFTWindow.Blackman);
     }
 
+    private void SetAudioData()
+    {
+        audioPlayer1.GetOutputData(dataSamples1, 0);
+        audioPlayer2.GetOutputData(dataSamples2, 0);
+    }
+
+    private void NormalizeSpectrumData()
+    {
+        DivideArrayBy(spectrumSamples1, GetAverage(dataSamples1));
+        DivideArrayBy(spectrumSamples2, GetAverage(dataSamples2));
+    }
+
     public float CompareSpectrumSimilarity(float[] spectrum1, float[] spectrum2)
     {//returns value from 1 to 0 on how similar are the spectrums; 1 means exactly same 
         if (spectrum1.Length != spectrum2.Length)
@@ -156,6 +187,38 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
         {
             diff += Mathf.Abs(spectrum1[i] - spectrum2[i]);
         }
-        return diff;
+        return diff / spectrum1.Length;
+    }
+
+    public float GetSum(float[] arr)
+    {
+        float sum = 0;
+        for (int i = 0; i < arr.Length; i++)
+            sum += arr[i];
+        return sum;
+    }
+
+    public float GetMax(float[] arr)
+    {
+        float max = arr[0];
+        for (int i = 0; i < arr.Length; i++)
+            if (arr[i] > max)
+                max = arr[i];
+        return max;
+    }
+
+    public float GetAverage(float[] arr)
+    {
+        float sum = 0;
+        for (int i = 0; i < arr.Length; i++)
+            sum += arr[i];
+        return sum / arr.Length;
+    }
+
+    public void DivideArrayBy(float[] arr, float divisor)
+    {
+        if(divisor != 0f)
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = arr[i] / divisor;
     }
 }

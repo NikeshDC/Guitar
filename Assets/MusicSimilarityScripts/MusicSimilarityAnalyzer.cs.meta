@@ -3,7 +3,15 @@ guid: ce5b7b9dce11bed4bab49e413a15e43e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - audioMixer: {fileID: 24100000, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
+  - music1: {instanceID: 0}
+  - player1: {fileID: -5367823625995010185, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
+  - music2: {instanceID: 0}
+  - player2: {fileID: 7985518058567945112, guid: 737357c04d9c597409eac1f1daaef8f1, type: 2}
+  - labelText: {instanceID: 0}
+  - scoreText: {instanceID: 0}
+  - beatsVisualizer: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
