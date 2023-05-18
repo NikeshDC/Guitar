@@ -20,6 +20,7 @@ public class BeatsVisualizer : MonoBehaviour
 
     public void InstantiateBeatObjects(int numberOfBeatIntervals)
     {
+        DestroyBeatObjects();
         this.numberOfBeatIntervals = numberOfBeatIntervals;
         beatObjects = new GameObject[this.numberOfBeatIntervals];
 
@@ -45,5 +46,13 @@ public class BeatsVisualizer : MonoBehaviour
             float newScale = baseScale * beatValues[i] * beatScaleFactor / beatInterval;
             beatObjects[i].transform.localScale = new Vector3(baseScale, newScale, baseScale);
         }
+    }
+
+    public void DestroyBeatObjects()
+    {
+        if (beatObjects != null)
+            for (int i = 0; i < beatObjects.Length; i++)
+                if (beatObjects[i] != null)
+                    Destroy(beatObjects[i]);
     }
 }
