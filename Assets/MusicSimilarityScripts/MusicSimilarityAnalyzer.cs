@@ -38,7 +38,7 @@ public class MusicSimilarityAnalyzer : MonoBehaviour
 
     [SerializeField]
     private float analyzeInterval = 10f / 1000f;  //time after which to periodically analyze audio
-    private float loudnessAnalysisWeight = 0.2f;
+    private float loudnessAnalysisWeight = 0.1f;
     
     public BeatsVisualizer beatsVisualizer;
 
